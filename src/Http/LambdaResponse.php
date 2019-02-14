@@ -62,6 +62,22 @@ class LambdaResponse
         // serialized to `[]` (we want `{}`) so we force it to an empty object.
         $headers = empty($this->headers) ? new \stdClass : $this->headers;
 
+        if (array_key_exists($this->headers, 'Content-Type')) {
+            $types = json_decode(file_get_contents('mime.json'));
+            $definition = array_get($types, array_get($this->headers, 'Content-Type'));
+            if ($definition) {
+                if (!array_get($definition, 'compressable', true)) {
+                    return [
+                        'isBase64Encoded' => true,
+                        'statusCode' => $this->statusCode,
+                        'headers' => $headers,
+                        'body' => base64_encode($this->body),
+                    ];
+                }
+
+            }
+        }
+
         // This is the format required by the AWS_PROXY lambda integration
         // See https://stackoverflow.com/questions/43708017/aws-lambda-api-gateway-error-malformed-lambda-proxy-response
         return [
