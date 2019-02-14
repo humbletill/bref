@@ -62,7 +62,7 @@ class LambdaResponse
         // serialized to `[]` (we want `{}`) so we force it to an empty object.
         $headers = empty($this->headers) ? new \stdClass : $this->headers;
 
-        if (array_key_exists($this->headers, 'Content-Type')) {
+        if (array_has($this->headers, 'Content-Type')) {
             $types = json_decode(file_get_contents('mime.json'));
             $definition = array_get($types, array_get($this->headers, 'Content-Type'));
             if ($definition) {
