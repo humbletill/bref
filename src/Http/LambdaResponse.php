@@ -63,18 +63,17 @@ class LambdaResponse
         $headers = empty($this->headers) ? new \stdClass : $this->headers;
 
         if (array_has($this->headers, 'Content-Type')) {
-            $types = json_decode(file_get_contents('mime.json'), true);
-            $definition = array_get($types, array_get($this->headers, 'Content-Type'));
-            if ($definition) {
-                if (!array_get($definition, 'compressible', true)) {
-                    return [
-                        'isBase64Encoded' => true,
-                        'statusCode' => $this->statusCode,
-                        'headers' => $headers,
-                        'body' => base64_encode($this->body),
-                    ];
-                }
-
+            $types        = json_decode(file_get_contents('mime.json'), true);
+            $type         = array_get($this->headers, 'Content-Type');
+            $compressible = array_get($definition, $type . '.compressible', true);
+            printf('Checking return Content-Type %s %s compressible? %b', $type, $compressible ? 'true' : 'false');
+            if (! $compressible) {
+                $data = [
+                    'isBase64Encoded' => true,
+                    'statusCode'      => $this->statusCode,
+                    'headers'         => $headers,
+                    'body'            => base64_encode($this->body),
+                ];
             }
         }
 
