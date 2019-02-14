@@ -66,7 +66,7 @@ class LambdaResponse
             $types = json_decode(file_get_contents('mime.json'), true);
             $definition = array_get($types, array_get($this->headers, 'Content-Type'));
             if ($definition) {
-                if (!array_get($definition, 'compressable', true)) {
+                if (!array_get($definition, 'compressible', true)) {
                     return [
                         'isBase64Encoded' => true,
                         'statusCode' => $this->statusCode,
