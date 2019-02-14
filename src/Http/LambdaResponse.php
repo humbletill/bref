@@ -63,7 +63,7 @@ class LambdaResponse
         $headers = empty($this->headers) ? new \stdClass : $this->headers;
 
         if (array_has($this->headers, 'Content-Type')) {
-            $types = json_decode(file_get_contents('mime.json'));
+            $types = json_decode(file_get_contents('mime.json'), true);
             $definition = array_get($types, array_get($this->headers, 'Content-Type'));
             if ($definition) {
                 if (!array_get($definition, 'compressable', true)) {
